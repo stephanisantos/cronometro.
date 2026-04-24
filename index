@@ -1,0 +1,92 @@
+DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cronômetro</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+    }
+
+    .cronometro {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .start { background-color: green; color: white; }
+    .pause { background-color: orange; color: white; }
+    .reset { background-color: red; color: white; }
+  </style>
+</head>
+<body>
+
+  <div class="cronometro" id="display">00:00:000</div>
+
+  <div>
+    <button class="start" onclick="iniciar()">Iniciar</button>
+    <button class="pause" onclick="pausar()">Pausar</button>
+    <button class="reset" onclick="resetar()">Resetar</button>
+  </div>
+
+  <script>
+    let inicio = 0;
+    let tempoDecorrido = 0;
+    let rodando = false;
+    let intervalo;
+
+    function atualizarDisplay(tempo) {
+      let minutos = Math.floor(tempo / 60000);
+      let segundos = Math.floor((tempo % 60000) / 1000);
+      let milesimos = tempo % 1000;
+
+      minutos = String(minutos).padStart(2, '0');
+      segundos = String(segundos).padStart(2, '0');
+      milesimos = String(milesimos).padStart(3, '0');
+
+      document.getElementById("display").textContent =
+        minutos + ":" + segundos + ":" + milesimos;
+    }
+
+    function iniciar() {
+      if (!rodando) {
+        rodando = true;
+        inicio = Date.now() - tempoDecorrido;
+
+        intervalo = setInterval(() => {
+          tempoDecorrido = Date.now() - inicio;
+          atualizarDisplay(tempoDecorrido);
+        }, 10);
+      }
+    }
+
+    function pausar() {
+      rodando = false;
+      clearInterval(intervalo);
+    }
+
+    function resetar() {
+      rodando = false;
+      clearInterval(intervalo);
+      tempoDecorrido = 0;
+      atualizarDisplay(0);
+    }
+  </script>
+
+</body>
+</html>
